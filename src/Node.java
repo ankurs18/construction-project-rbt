@@ -1,9 +1,10 @@
 public class Node
 {
-
-    Node left, right, parent;
+    public static final Node nil = new Node(new Building(-1, -1));
+    Node left= nil, right = nil, parent = nil;
     private Building building;
     int color;
+    //private final Node nil = new Node(new Building(-1, -1));
 
     @Override
     public String toString() {
@@ -18,8 +19,6 @@ public class Node
 
     public Node(Building building)
     {
-        left = null;
-        right = null;
         this.building = building;
         color = Constants.RED;
     }
@@ -35,4 +34,10 @@ public class Node
     public int compareTo(Node o) {
         return this.getBuilding().getBuildingNum() - o.getBuilding().getBuildingNum();
     }
+
+//    public int heapCompareTo(Building o) {
+//        Building b1 = this.getBuilding();
+//        Building b2 = o.getBuilding();
+//        if(b1.getExecutedTime() < b2.)
+//    }
 }
