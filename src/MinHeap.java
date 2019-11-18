@@ -3,16 +3,16 @@ import java.util.ArrayList;
 public class MinHeap {
 
     private ArrayList<Building> heapArray;
-    private int heapSize;
+    int heapSize;
 
-    public MinHeap() {
-        this.heapArray = new ArrayList<Building>();
+    MinHeap() {
+        this.heapArray = new ArrayList<>();
         this.heapSize = 0;
     }
 
     // adds a building (with the initial executed time set to Max Integer) to the heap's last position
     // and then decreases the heap's element's main key, i.e., the building's executed time to 0
-    public void insert(Building building) {
+    void insert(Building building) {
         heapArray.add(building);
         decreaseKey(heapSize++, 0);
     }
@@ -20,7 +20,7 @@ public class MinHeap {
     // decreases the key of the element at position i and makes relevant updates, moving the element up the heap;
     // this is done by exchanging the building element with its parent element in the heap
     // while the parent is larger than the current element
-    private void decreaseKey(int i, int key) {
+    public void decreaseKey(int i, int key) {
         Building curr = heapArray.get(i);
         curr.setExecutedTime(key);
         while (i > 0 && heapArray.get(parentOf(i)).compareTo(curr) > 0) {
@@ -35,7 +35,12 @@ public class MinHeap {
         heapify(i);
     }
 
-    private void heapify(int pos){
+    public void heapifyEntire(){
+        for(int i = (int)Math.floor(heapSize/2); i>=0;i--){
+            heapify(i);
+        }
+    }
+    public void heapify(int pos){
         int leftIndex = leftChildOf(pos);
         Building curr = heapArray.get(pos);
         Building left =  leftIndex < heapSize ? heapArray.get(leftIndex) : null;
@@ -43,7 +48,8 @@ public class MinHeap {
         Building right =  rightIndex < heapSize ? heapArray.get(rightIndex) : null;
         int minimum;
         minimum = (left !=null && left.compareTo(curr)<0) ? leftIndex : pos;
-        minimum = (right !=null && right.compareTo(curr) < 0)? rightIndex : minimum;
+        Building minBuilding = heapArray.get(minimum);
+        minimum = (right !=null && right.compareTo(minBuilding) < 0)? rightIndex : minimum;
         if(minimum !=pos){
             swap(pos, minimum);
             heapify(minimum);
@@ -57,6 +63,8 @@ public class MinHeap {
     }
 
     public Building peek(){
+        if(heapSize<0)
+            return null;
         return heapArray.get(0);
     }
 
@@ -65,8 +73,11 @@ public class MinHeap {
             return null;
         Building min = heapArray.get(0);
         heapArray.set(0, heapArray.get(heapSize-1));
+        heapArray.remove(heapArray.get(heapSize-1));
         heapSize--;
-        heapify(0);
+        if(heapSize>0)
+            //heapify(0);
+            heapifyEntire();
         return min;
     }
 

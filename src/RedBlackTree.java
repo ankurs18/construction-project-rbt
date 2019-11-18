@@ -2,52 +2,105 @@ import java.util.zip.CheckedOutputStream;
 
 public class RedBlackTree {
 
-
     private Node root;
+
     public RedBlackTree() {
-        root = Node.nil;
+        root = nil;
     }
 
     public void insert(Building buildingData) {
         Node newNode = new Node(buildingData);
 
-        if (root == Node.nil) {
+        if (root == nil) {
             root = newNode;
-            newNode.setColor(Constants.BLACK);
+            root.parent = nil;
+            root.setColor(Constants.BLACK);
             return;
         }
         Node dummyNode = root;
-        Node pp = Node.nil;
-        while (dummyNode != Node.nil) {
+        Node pp = nil;
+        while (dummyNode != nil) {
             pp = dummyNode;
             if (newNode.compareTo(pp) < 0) {
-                dummyNode = dummyNode.left;
+                if(pp.left == nil){
+                    pp.left = newNode;
+                    newNode.parent = pp;
+                    break;
+                }
+                else
+                    dummyNode = dummyNode.left;
             } else {
+                if(pp.right == nil){
+                    pp.right = newNode;
+                    newNode.parent = pp;
+                    break;
+                }
+                else
                 dummyNode = dummyNode.right;
             }
         }
-        newNode.parent = pp;
-
-        if (pp.compareTo(newNode) < 0) {
-            pp.right = newNode;
-            //System.out.println("toright");
-            //System.out.println("p:" + newNode.toString());
-            //System.out.println("pp:" + pp.toString());
-        } else {
-            pp.left = newNode;
-            //System.out.println("toleft");
-            //System.out.println("p:" + newNode.toString());
-            //System.out.println("pp:" + pp.toString());
-        }
-        rebalance(newNode);
+//        newNode.parent = pp;
+//
+//        if (pp.compareTo(newNode) < 0) {
+//            pp.right = newNode;
+//
+//        } else {
+//            pp.left = newNode;
+//        }
+        fixTree(newNode);
     }
+    private void fixTree(Node node) {
+        while (node.parent.color == Constants.RED) {
+            Node uncle = nil;
+            if (node.parent == node.parent.parent.left) {
+                uncle = node.parent.parent.right;
 
+                if (uncle != nil && uncle.color == Constants.RED) {
+                    node.parent.color = Constants.BLACK;
+                    uncle.color = Constants.BLACK;
+                    node.parent.parent.color = Constants.RED;
+                    node = node.parent.parent;
+                    continue;
+                }
+                if (node == node.parent.right) {
+                    //Double rotation needed
+                    node = node.parent;
+                    rotateLeft(node);
+                }
+                node.parent.color = Constants.BLACK;
+                node.parent.parent.color = Constants.RED;
+                //if the "else if" code hasn't executed, this
+                //is a case where we only need a single rotation
+                rightRotate(node.parent.parent);
+            } else {
+                uncle = node.parent.parent.left;
+                if (uncle != nil && uncle.color == Constants.RED) {
+                    node.parent.color = Constants.BLACK;
+                    uncle.color = Constants.BLACK;
+                    node.parent.parent.color = Constants.RED;
+                    node = node.parent.parent;
+                    continue;
+                }
+                if (node == node.parent.left) {
+                    //Double rotation needed
+                    node = node.parent;
+                    rightRotate(node);
+                }
+                node.parent.color = Constants.BLACK;
+                node.parent.parent.color = Constants.RED;
+                //if the "else if" code hasn't executed, this
+                //is a case where we only need a single rotation
+                rotateLeft(node.parent.parent);
+            }
+        }
+        root.color = Constants.BLACK;
+    }
     private void rebalance(Node p) {
         //p.parent!=null &&
         while (p.parent.color == Constants.RED) {
             Node pp = p.parent;
             Node gp = pp.parent;
-            if (gp == Node.nil)
+            if (gp == nil)
                 return;
             switch (getInsertImbalanceType(p, pp, gp)) {
                 // Case 1: if p is left child of pp, pp is left child of gp and gp's other child is black
@@ -97,7 +150,7 @@ public class RedBlackTree {
     }
 
     void rightRotate(Node node) {
-        if (node.parent != Node.nil) {
+        if (node.parent != nil) {
             if (node == node.parent.left) {
                 node.parent.left = node.left;
             } else {
@@ -106,7 +159,7 @@ public class RedBlackTree {
 
             node.left.parent = node.parent;
             node.parent = node.left;
-            if (node.left.right != Node.nil) {
+            if (node.left.right != nil) {
                 node.left.right.parent = node;
             }
             node.left = node.left.right;
@@ -117,7 +170,7 @@ public class RedBlackTree {
             left.right.parent = root;
             root.parent = left;
             left.right = root;
-            left.parent = Node.nil;
+            left.parent = nil;
             root = left;
         }
     }
@@ -125,7 +178,7 @@ public class RedBlackTree {
     private void rightRotatemod(Node currNode) {
         Node parent = currNode.parent;
         // checking if currNode is the root
-        if (parent != Node.nil) {
+        if (parent != nil) {
             if (parent.right == currNode) {
                 parent.left = currNode.left;
             } else {
@@ -133,7 +186,7 @@ public class RedBlackTree {
             }
             currNode.left.parent = parent;
             currNode.parent = currNode.left;
-            if (currNode.left.right != Node.nil) {
+            if (currNode.left.right != nil) {
                 currNode.left.right.parent = currNode;
             }
             currNode.left = currNode.left.right;
@@ -144,7 +197,7 @@ public class RedBlackTree {
             left.right.parent = root;
             root.parent = left;
             left.right = root;
-            left.parent = Node.nil;
+            left.parent = nil;
             root = left;
         }
     }
@@ -153,7 +206,7 @@ public class RedBlackTree {
         Node parent = currNode.parent;
         Node left = currNode.left;
         // checking if currNode is the root
-        if (parent != Node.nil) {
+        if (parent != nil) {
             if (parent.right == currNode) {
                 parent.left = left;
             } else {
@@ -161,21 +214,21 @@ public class RedBlackTree {
             }
             left.parent = parent;
         } else {
-            left.parent = Node.nil;
+            left.parent = nil;
             root = left;
         }
         currNode.parent = left;
-        if (left.right != Node.nil) {
+        if (left.right != nil) {
             left.right.parent = currNode;
         }
         currNode.left = currNode.left.right;
         currNode.parent.right = currNode;
     }
 
-    void rotateLeft(Node currNode) {
+    void rotateLeftOwn(Node currNode) {
         Node parent = currNode.parent;
         Node right = currNode.right;
-        if (parent != Node.nil) {
+        if (parent != nil) {
             if (currNode == parent.left) {
                 parent.left = right;
             } else {
@@ -183,20 +236,44 @@ public class RedBlackTree {
             }
             right.parent = parent;
         } else {
-            right.parent = Node.nil;
+            right.parent = nil;
             root = right;
         }
         currNode.parent = right;
-        if (right.left != Node.nil) {
+        if (right.left != nil) {
             right.left.parent = currNode;
         }
         currNode.right = currNode.right.left;
         currNode.parent.left = currNode;
     }
+    void rotateLeft(Node node) {
+        if (node.parent != nil) {
+            if (node == node.parent.left) {
+                node.parent.left = node.right;
+            } else {
+                node.parent.right = node.right;
+            }
+            node.right.parent = node.parent;
+            node.parent = node.right;
+            if (node.right.left != nil) {
+                node.right.left.parent = node;
+            }
+            node.right = node.right.left;
+            node.parent.left = node;
+        } else {//Need to rotate root
+            Node right = root.right;
+            root.right = right.left;
+            right.left.parent = root;
+            root.parent = right;
+            right.left = root;
+            right.parent = nil;
+            root = right;
+        }
+    }
 
     void rotateLeft1(Node currNode) {
         Node parent = currNode.parent;
-        if (parent != Node.nil) {
+        if (parent != nil) {
             if (currNode == parent.left) {
                 parent.left = currNode.right;
             } else {
@@ -204,7 +281,7 @@ public class RedBlackTree {
             }
             currNode.right.parent = parent;
             currNode.parent = currNode.right;
-            if (currNode.right.left != Node.nil) {
+            if (currNode.right.left != nil) {
                 currNode.right.left.parent = currNode;
             }
             currNode.right = currNode.right.left;
@@ -215,7 +292,7 @@ public class RedBlackTree {
             right.left.parent = root;
             root.parent = right;
             right.left = root;
-            right.parent = Node.nil;
+            right.parent = nil;
             root = right;
         }
     }
@@ -236,17 +313,17 @@ public class RedBlackTree {
     }*/
 
     private String getInsertImbalanceType(Node p, Node pp, Node gp) {
-        if (gp.right != Node.nil && gp.right.color == Constants.RED && gp.left != Node.nil && gp.right.color == Constants.RED)
+        if (gp.right != nil && gp.right.color == Constants.RED && gp.left != nil && gp.right.color == Constants.RED)
             return "XYr";
         StringBuilder builder = new StringBuilder();
         if (gp.left == pp) {
             builder.append('L');
-            if (gp.right != Node.nil && gp.right.color == Constants.RED) builder.append('r');
+            if (gp.right != nil && gp.right.color == Constants.RED) builder.append('r');
             else
                 builder.append('b');
         } else {
             builder.append('R');
-            if (gp.left != Node.nil && gp.left.color == Constants.RED) builder.append('r');
+            if (gp.left != nil && gp.left.color == Constants.RED) builder.append('r');
             else
                 builder.append('b');
         }
@@ -262,34 +339,70 @@ public class RedBlackTree {
     }
 
     private void printInorder(Node node) {
-        if (node == Node.nil)
+        if (node == nil)
             return;
         printInorder(node.left);
         System.out.print("Building num: " + node.getBuilding().getBuildingNum() + " color: " + node.color + " ");
         printInorder(node.right);
     }
+    boolean delete(Building building){
+        Node n = new Node(building);
+        return delete(n);
+    }
+    boolean delete(Node z){
+        if((z = search(z))==null)return false;
+        Node x;
+        Node y = z; // temporary reference y
+        int y_original_color = y.color;
+
+        if(z.left == nil){
+            x = z.right;
+            transplant(z, z.right);
+        }else if(z.right == nil){
+            x = z.left;
+            transplant(z, z.left);
+        }else{
+            if(z.right==null){
+                System.out.println("null");
+            }
+            y = findMinimumInSubtree(z.right);
+            y_original_color = y.color;
+            x = y.right;
+            if(y.parent == z)
+                x.parent = y;
+            else{
+                transplant(y, y.right);
+                y.right = z.right;
+                y.right.parent = y;
+            }
+            transplant(z, y);
+            y.left = z.left;
+            y.left.parent = y;
+            y.color = z.color;
+        }
+        if(y_original_color==Constants.BLACK)
+            deleteFixup(x);
+        return true;
+    }
 
     public boolean deleteNode(Node nodeToDelete) {
         nodeToDelete = search(nodeToDelete);
-        if (nodeToDelete == Node.nil)
+        if (nodeToDelete == nil)
             return false;
 
         Node y = nodeToDelete, x;
         int originalColorN = nodeToDelete.color;
 
-        if (nodeToDelete.left == Node.nil && nodeToDelete.right == Node.nil) {
-            if (nodeToDelete.parent.left == nodeToDelete){
-                nodeToDelete.parent.left=Node.nil;
-            }
-            else
-                nodeToDelete.parent.right=Node.nil;
-            x=Node.nil;
-        }
-
-        else if (nodeToDelete.left == Node.nil) {
+        if (nodeToDelete.left == nil && nodeToDelete.right == nil) {
+            if (nodeToDelete.parent.left == nodeToDelete) {
+                nodeToDelete.parent.left = nil;
+            } else
+                nodeToDelete.parent.right = nil;
+            x = nil;
+        } else if (nodeToDelete.left == nil) {
             x = nodeToDelete.right;
             transplant(nodeToDelete, nodeToDelete.right);
-        } else if (nodeToDelete.right == Node.nil) {
+        } else if (nodeToDelete.right == nil) {
             x = nodeToDelete.left;
             transplant(nodeToDelete, nodeToDelete.left);
         } else {
@@ -298,7 +411,7 @@ public class RedBlackTree {
             originalColorN = y.color;
             x = y.right;
             if (y.parent == nodeToDelete) {
-                if(x!=Node.nil) x.parent = y ;
+                if (x != nil) x.parent = y;
             } else {
                 transplant(y, y.right);
                 y.right = nodeToDelete.right;
@@ -310,8 +423,69 @@ public class RedBlackTree {
             y.color = nodeToDelete.color;
         }
         if (originalColorN == Constants.BLACK)
-            deleteRebalance(x);
+            deleteFixup(x);
         return true;
+    }
+    void deleteFixup(Node x) {
+        while(x!=root && x.color == Constants.BLACK){
+            if(x == x.parent.left){
+                Node w = x.parent.right;
+                if(w.color == Constants.RED){
+                    w.color = Constants.BLACK;
+                    x.parent.color = Constants.RED;
+                    rotateLeft(x.parent);
+                    w = x.parent.right;
+                }
+                if(w.left==null){
+                    System.out.println("null");
+                }
+                if(w.left.color == Constants.BLACK && w.right.color == Constants.BLACK){
+                    w.color = Constants.RED;
+                    x = x.parent;
+                    continue;
+                }
+                else if(w.right.color == Constants.BLACK){
+                    w.left.color = Constants.BLACK;
+                    w.color = Constants.RED;
+                    rightRotate(w);
+                    w = x.parent.right;
+                }
+                if(w.right.color == Constants.RED){
+                    w.color = x.parent.color;
+                    x.parent.color = Constants.BLACK;
+                    w.right.color = Constants.BLACK;
+                    rotateLeft(x.parent);
+                    x = root;
+                }
+            }else{
+                Node w = x.parent.left;
+                if(w.color == Constants.RED){
+                    w.color = Constants.BLACK;
+                    x.parent.color = Constants.RED;
+                    rightRotate(x.parent);
+                    w = x.parent.left;
+                }
+                if(w.right.color == Constants.BLACK && w.left.color == Constants.BLACK){
+                    w.color = Constants.RED;
+                    x = x.parent;
+                    continue;
+                }
+                else if(w.left.color == Constants.BLACK){
+                    w.right.color = Constants.BLACK;
+                    w.color = Constants.RED;
+                    rotateLeft(w);
+                    w = x.parent.left;
+                }
+                if(w.left.color == Constants.RED){
+                    w.color = x.parent.color;
+                    x.parent.color = Constants.BLACK;
+                    w.left.color = Constants.BLACK;
+                    rightRotate(x.parent);
+                    x = root;
+                }
+            }
+        }
+        x.color = Constants.BLACK;
     }
 
     private void deleteRebalance(Node node) {
@@ -323,17 +497,17 @@ public class RedBlackTree {
                     node.parent.color = Constants.RED;
                     rotateLeft(node.parent);
                 }
-                if (sibling.left.color == Constants.BLACK && sibling.right.color == Constants.BLACK) {
+                if (sibling.left!=null && sibling.left.color == Constants.BLACK && sibling.right!=null && sibling.right.color == Constants.BLACK) {
                     sibling.color = Constants.RED;
                     node = node.parent;
                     continue;
-                } else if (sibling.right.color == Constants.BLACK) {
+                } else if (sibling.right==null || sibling.right.color == Constants.BLACK) {
                     sibling.left.color = Constants.BLACK;
                     sibling.color = Constants.RED;
                     rightRotate(sibling);
                     sibling = node.parent.right;
                 }
-                if (sibling.right.color == Constants.RED) {
+                if (sibling.right!=null && sibling.right.color == Constants.RED) {
                     sibling.color = node.parent.color;
                     node.parent.color = Constants.BLACK;
                     sibling.right.color = Constants.BLACK;
@@ -348,11 +522,11 @@ public class RedBlackTree {
                     rightRotate(node.parent);
                     sibling = node.parent.left;
                 }
-                if (sibling.right.color == Constants.BLACK && sibling.left.color == Constants.BLACK) {
+                if (sibling.right.color == Constants.BLACK && sibling.left!=null  && sibling.left.color == Constants.BLACK) {
                     sibling.color = Constants.RED;
                     node = node.parent;
                     continue;
-                } else if (sibling.left.color == Constants.BLACK) {
+                } else if (sibling.left!=null  && sibling.left.color == Constants.BLACK) {
                     sibling.right.color = Constants.BLACK;
                     sibling.color = Constants.RED;
                     rotateLeft(sibling);
@@ -370,8 +544,8 @@ public class RedBlackTree {
         node.color = Constants.BLACK;
     }
 
-    public void transplant(Node u, Node v) {
-        if (u.parent == Node.nil)
+    public void transplantown(Node u, Node v) {
+        if (u.parent == nil)
             root = v;
         else if (u == u.parent.left)
             u.parent.left = v;
@@ -379,19 +553,35 @@ public class RedBlackTree {
             u.parent.right = v;
         v.parent = u.parent;
     }
+    void transplant(Node target, Node with){
+        if(target.parent == nil){
+            root = with;
+        }else if(target == target.parent.left){
+            target.parent.left = with;
+        }else
+            target.parent.right = with;
+        with.parent = target.parent;
+    }
 
     Node findMinimumInSubtree(Node subTreeRoot) {
-        while (subTreeRoot.left != Node.nil) {
+        if(subTreeRoot==null){
+            return subTreeRoot.parent;
+        }
+        while (subTreeRoot.left != nil) {
+            if(subTreeRoot.left==null){
+                break;
+            }
             subTreeRoot = subTreeRoot.left;
+
         }
         return subTreeRoot;
     }
 
     public Node search(Node nodeToSearch) {
-        if (root == Node.nil)
-            return Node.nil;
+        if (root == nil)
+            return null;
         Node dummyNode = root;
-        while (dummyNode != Node.nil) {
+        while (dummyNode != nil) {
             if (nodeToSearch.compareTo(dummyNode) < 0) {
                 dummyNode = dummyNode.left;
             } else if (nodeToSearch.compareTo(dummyNode) > 0) {
@@ -399,6 +589,101 @@ public class RedBlackTree {
             } else
                 return dummyNode;
         }
-        return Node.nil;
+        return null;
+    }
+
+    public String printBuilding(int buildingNum) {
+        Node nodeToSearch = new Node(new Building(buildingNum, -1));
+        if (root == nil)
+            return "(0,0,0)";
+        Node dummyNode = root;
+        while (dummyNode != nil) {
+            if (nodeToSearch.compareTo(dummyNode) < 0) {
+                dummyNode = dummyNode.left;
+            } else if (nodeToSearch.compareTo(dummyNode) > 0) {
+                dummyNode = dummyNode.right;
+            } else
+                return dummyNode.getBuilding().toStringForOutput();
+        }
+        return "(0,0,0)";
+    }
+
+    // wrapper function to print buildings in the given range
+    public String printRange(int b1, int b2) {
+        StringBuilder b = printRange(root, b1, b2, new StringBuilder());
+        //b = (b.length()>1) ? b: new StringBuilder("(0,0,0)");
+        //System.out.println(b.substring(0, b.length() - 1));
+        return (b.length()>1) ? b.substring(0, b.length() - 1) : "(0,0,0)";
+    }
+
+    // recursive function to print buildings in the given range
+    // initially called from root node
+    private StringBuilder printRange(Node node, int b1, int b2, StringBuilder builder) {
+        if (node == null) {
+            return builder;
+        }
+        Building b = node.getBuilding();
+        int currBuildingNum = b.getBuildingNum();
+        if (b1 < currBuildingNum) {
+            printRange(node.left, b1, b2, builder);
+        }
+
+        if (b1 <= currBuildingNum && b2 >= currBuildingNum) {
+            builder.append(b.toStringForOutput());
+            builder.append(',');
+            //System.out.print(b.toStringForOutput());
+        }
+
+        if (b2 > currBuildingNum) {
+            printRange(node.right, b1, b2, builder);
+        }
+        return builder;
+    }
+    private final Node nil = new Node(new Building(-1, -1), Constants.BLACK);
+    public class Node {
+        //public static final Node nil = new Node(new Building(-1, -1));
+        Node left = nil, right = nil, parent = nil;
+        private Building building;
+        int color;
+        //private final Node nil = new Node(new Building(-1, -1));
+
+//        @Override
+//        public String toString() {
+//            return "Node{" +
+//                    //"left=" + left +
+//                    //", right=" + right +
+//                    ", parent=" + parent +
+//                    ", building=" + building.getBuildingNum() +
+//                    ", color=" + color +
+//                    '}';
+//        }
+
+        public Node(Building building) {
+            this.building = building;
+            color = Constants.RED;
+//            left = nil;
+//            right = nil;
+//            parent = nil;
+        }
+
+        public Node(Building building, int color) {
+            this.building = building;
+            this.color = color;
+//            this.left = nil;
+//            this.right = nil;
+//            this.parent = nil;
+        }
+
+        public void setColor(int color) {
+            this.color = color;
+        }
+
+        public Building getBuilding() {
+            return this.building;
+        }
+
+        public int compareTo(Node o) {
+            return this.getBuilding().getBuildingNum() - o.getBuilding().getBuildingNum();
+        }
     }
 }
