@@ -10,7 +10,7 @@ public class MinHeap {
         this.heapSize = 0;
     }
 
-    // adds a building (with the initial executed time set to Max Integer) to the heap's last position
+    // adds a building to the heap's last position
     // and then decreases the heap's element's main key, i.e., the building's executed time to 0
     void insert(Building building) {
         heapArray.add(building);
@@ -19,27 +19,35 @@ public class MinHeap {
 
     // decreases the key of the element at position i and makes relevant updates, moving the element up the heap;
     // this is done by exchanging the building element with its parent element in the heap
-    // while the parent is larger than the current element
+    // while the parent is larger than the current element; key here is the current executed time of the building
     public void decreaseKey(int i, int key) {
         Building curr = heapArray.get(i);
         curr.setExecutedTime(key);
         while (i > 0 && heapArray.get(parentOf(i)).compareTo(curr) > 0) {
             swap(parentOf(i), i);
             i = parentOf(i);
-
         }
     }
 
+    // Sets the ith element’s key, i.e., the building’s execution time to the value provided as parameter.
+    // Calls the heapify(i) method to ensure that the subtree rooted at position i satisfies the min-heap property
+    // and restores the same if it has been violated by increasing the element’s key.
     public void increaseKey(int i, int key){
         heapArray.get(i).setExecutedTime(key);
         heapify(i);
     }
 
+    // builds the entire array into a min heap.
+    // this method is invoked when the min-heap may be violated at more than one positions
     public void heapifyEntire(){
         for(int i = (int)Math.floor(heapSize/2); i>=0;i--){
             heapify(i);
         }
     }
+
+    // Restores the min-heap property at index pos.
+    // Its assumes that the subtrees rooter at left(pos) and right(pos) are min-heaps.
+    // When array[pos] is smaller than its children the method makes it float down such that the min-heap property is maintained.
     public void heapify(int pos){
         int leftIndex = leftChildOf(pos);
         Building curr = heapArray.get(pos);
@@ -56,18 +64,14 @@ public class MinHeap {
         }
     }
 
-    public void print(){
-        for(Building b: heapArray){
-            System.out.println(b);
-        }
-    }
-
+    //returns the minimum element in the heap, without removing it
     public Building peek(){
         if(heapSize<0)
             return null;
         return heapArray.get(0);
     }
 
+    //removes and returns the minimum in the heap; calls heapify to maintain the heap property
     public Building extractMin(){
         if(heapSize<0)
             return null;
@@ -81,32 +85,26 @@ public class MinHeap {
         return min;
     }
 
+    // helper function to swap two heap elements
     private void swap(int i1, int i2){
         Building temp = heapArray.get(i1);
         heapArray.set(i1, heapArray.get(i2));
         heapArray.set(i2, temp);
     }
 
-    private void swap(Building b1, Building b2){
-        Building temp = b1;
-        b1 = b2;
-        b2 = temp;
-    }
-
+    // helper function to calculate index of the parent of ith element
     private int parentOf(int i) {
         return (int) (Math.floor(i-1) / 2);
     }
 
+    // helper function to calculate index of the left child of ith element
     private int leftChildOf(int i) {
         return (2 * i) + 1;
     }
 
+    // helper function to calculate index of the right child of ith element
     private int rightChildOf(int i) {
         return (2 * i) + 2;
-    }
-
-    public ArrayList<Building> getHeapArray() {
-        return heapArray;
     }
 
     public int getHeapSize() {

@@ -5,18 +5,6 @@ public class Building {
 
     @Override
     public String toString() {
-//        return "Building{" +
-//                "buildingNum=" + buildingNum +
-//                ", executedTime=" + executedTime +
-//                ", totalTime=" + totalTime +
-//                '}';
-        return "(" + buildingNum +
-                "," + executedTime +
-                "," + totalTime +
-                ')';
-    }
-
-    public String toStringForOutput() {
         return "(" + buildingNum +
                 "," + executedTime +
                 "," + totalTime +
@@ -26,7 +14,6 @@ public class Building {
     public Building(int buildingNum, int totalTime) {
         this.buildingNum = buildingNum;
         this.totalTime = totalTime;
-        //this.executedTime = Integer.MAX_VALUE;
         this.executedTime = 0;
     }
 
