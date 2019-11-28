@@ -39,7 +39,7 @@ public class MinHeap {
 
     // builds the entire array into a min heap.
     // this method is invoked when the min-heap may be violated at more than one positions
-    public void heapifyEntire(){
+    void heapifyEntire(){
         for(int i = (int)Math.floor(heapSize/2); i>=0;i--){
             heapify(i);
         }
@@ -48,7 +48,7 @@ public class MinHeap {
     // Restores the min-heap property at index pos.
     // Its assumes that the subtrees rooter at left(pos) and right(pos) are min-heaps.
     // When array[pos] is smaller than its children the method makes it float down such that the min-heap property is maintained.
-    public void heapify(int pos){
+    private void heapify(int pos){
         int leftIndex = leftChildOf(pos);
         Building curr = heapArray.get(pos);
         Building left =  leftIndex < heapSize ? heapArray.get(leftIndex) : null;
@@ -65,14 +65,14 @@ public class MinHeap {
     }
 
     //returns the minimum element in the heap, without removing it
-    public Building peek(){
+    Building peek(){
         if(heapSize<0)
             return null;
         return heapArray.get(0);
     }
 
     //removes and returns the minimum in the heap; calls heapify to maintain the heap property
-    public Building extractMin(){
+    Building extractMin(){
         if(heapSize<0)
             return null;
         Building min = heapArray.get(0);
@@ -107,7 +107,7 @@ public class MinHeap {
         return (2 * i) + 2;
     }
 
-    public int getHeapSize() {
+    int getHeapSize() {
         return heapSize;
     }
 

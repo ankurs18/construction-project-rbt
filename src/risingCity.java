@@ -3,21 +3,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Main {
+public class risingCity {
     private MinHeap heap;
     private RedBlackTree rbTree;
     private int globalTime;
     private PrintWriter writer;
-    private ArrayList<Integer> pendingDecreaseKeys;
-    private ArrayList<Building> pendingInputs;
+    private ArrayList<Building> pendingHeapInserts;
 
-    public Main() {
+    public risingCity() {
         globalTime = 0;
         this.heap = new MinHeap();
         this.rbTree = new RedBlackTree();
-        pendingDecreaseKeys = new ArrayList<>();
-        pendingInputs = new ArrayList<>();
-
+        pendingHeapInserts = new ArrayList<>();
         try {
             this.writer = new PrintWriter(new FileWriter("output.txt"));
         } catch (Exception e) {
@@ -26,48 +23,48 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Main main = new Main();
+        risingCity main = new risingCity();
         Scanner sc = main.readFile("input3.txt");
+        System.out.println("Execution started..");
         main.process(sc);
         main.writer.close();
+        System.out.println("Execution completed. Output file: output.txt");
     }
 
     // the next command to process is read from the input file but not processed until its time matches the global timer
     private void process(Scanner sc) {
         String currCommand = "";
-        Building b=null;
+        Building b = null;
         int workOnLastBuilding = 5;
         int executedTime = 0, totalTime = 0;
         boolean isLastReadCommandExecuted = true;
         boolean isLastPickedBuildingWorked = true;
+        boolean isGlobalTimeIncreased;
         while (sc.hasNextLine() || heap.getHeapSize() > 0 || !isLastReadCommandExecuted || workOnLastBuilding < 5) {
-
+            isGlobalTimeIncreased = false;
             if (isLastReadCommandExecuted && sc.hasNextLine()) {
                 currCommand = sc.nextLine();
                 isLastReadCommandExecuted = false;
             }
-
-            if(globalTime==60) {
-                System.out.print("");
-            }
-            isLastReadCommandExecuted = isLastReadCommandExecuted ? true : processCommand(currCommand, isLastPickedBuildingWorked);
+            isLastReadCommandExecuted = isLastReadCommandExecuted || processCommand(currCommand, isLastPickedBuildingWorked);
             if (workOnLastBuilding == 5 && heap.getHeapSize() > 0) {
-                completePendingDecreaseKeys();
+                completePendingHeapInserts();
                 b = heap.peek();
                 totalTime = b.getTotalTime();
                 executedTime = b.getExecutedTime() + 1;
                 heap.peek().setExecutedTime(executedTime);
                 workOnLastBuilding = 1;
                 isLastPickedBuildingWorked = false;
-                //completePendingDecreaseKeys();
                 if (totalTime == executedTime) {
                     b = heap.extractMin();
-                    rbTree.delete(b);
-                    //System.out.println("(" + b.getBuildingNum() + "," + (globalTime + 1) + ")");
-                    printOutput("(" + b.getBuildingNum() + "," + (globalTime + 1) + ")");
-                    workOnLastBuilding = 5;
+                    globalTime++;
+                    isGlobalTimeIncreased = true;
                     isLastPickedBuildingWorked = true;
-                    completePendingDecreaseKeys();
+                    isLastReadCommandExecuted = isLastReadCommandExecuted || processCommand(currCommand, isLastPickedBuildingWorked && currCommand.contains("Print"));
+                    rbTree.delete(b);
+                    printOutput("(" + b.getBuildingNum() + "," + globalTime + ")");
+                    workOnLastBuilding = 5;
+                    completePendingHeapInserts();
                 }
             } else if (workOnLastBuilding < 5) {
                 workOnLastBuilding++;
@@ -75,23 +72,23 @@ public class Main {
                 heap.peek().setExecutedTime(executedTime);
                 if (totalTime == executedTime) {
                     b = heap.extractMin();
-                    rbTree.delete(b);
-                    //System.out.println("(" + b.getBuildingNum() + "," + (globalTime + 1) + ")");
-                    printOutput("(" + b.getBuildingNum() + "," + (globalTime + 1) + ")");
-                    workOnLastBuilding = 5;
+                    globalTime++;
+                    isGlobalTimeIncreased = true;
                     isLastPickedBuildingWorked = true;
-                    completePendingDecreaseKeys();
+                    isLastReadCommandExecuted = isLastReadCommandExecuted || processCommand(currCommand, isLastPickedBuildingWorked && currCommand.contains("Print"));
+                    rbTree.delete(b);
+                    printOutput("(" + b.getBuildingNum() + "," + globalTime + ")");
+                    workOnLastBuilding = 5;
+                    completePendingHeapInserts();
                 } else if (workOnLastBuilding == 5) {
-//                    heap.increaseKey(0, executedTime);
-//                    isLastPickedBuildingWorked = true;
-//                    completePendingDecreaseKeys();
-                    completePendingDecreaseKeys();
-                    //heap.heapify(0);
+                    completePendingHeapInserts();
                     heap.heapifyEntire();
                     isLastPickedBuildingWorked = true;
                 }
             }
-            globalTime++;
+            if (!isGlobalTimeIncreased) {
+                globalTime++;
+            }
         }
     }
 
@@ -124,48 +121,43 @@ public class Main {
             }
             break;
             default:
-                System.out.println( "Error:Invalid command encountered - " + command);
+                printOutput("Error:Invalid command encountered - " + command);
+                System.out.println("Error:Invalid command encountered - " + command);
                 System.exit(-1);
         }
         return true;
     }
 
-    // Writes the string given to it as a parameter to the specified output text file.
-    // It uses the PrintWriter object initialized in the constructor.
-    private void printOutput(String output) {
-        System.out.println(output);
-        writer.println(output);
-    }
-
     // inserts the building element into the red-black tree; but its added to the min heap if a building not being worked upon
     // if the construction of a building is in process new buildings to be inserted are not immediately added to the heap;
     // this would mess the heap balance, and thus we add those buildings to a list of pending buildings
-    // which is processed the heap only once the current building being worked upon is done or 5 days are up (whichever is earlier))
+    // which is processed only once the current building being worked upon is done or 5 days are up (whichever is earlier))
     private void insertBuilding(int buildingNum, int totalTime, boolean isLastPickedBuildingWorked) {
         Building b = new Building(buildingNum, totalTime);
 
         rbTree.insert(b);
         if (isLastPickedBuildingWorked)
             heap.insert(b);
-        else
-        {  //pendingDecreaseKeys.add(heap.heapSize-1);
-            pendingInputs.add(b);}
+        else {
+            pendingHeapInserts.add(b);
+        }
     }
 
-    //helper function to process (if any) pending building inputs to the min heap
-    private void completePendingDecreaseKeys() {
-        if (pendingInputs.size() > 0) {
-            for (Building b : pendingInputs) {
+    // Helper function to insert (if any) pending building inputs to the min heap.
+    // Called when the construction of the previous building is completed.
+    private void completePendingHeapInserts() {
+        if (pendingHeapInserts.size() > 0) {
+            for (Building b : pendingHeapInserts) {
                 heap.insert(b);
             }
-            pendingInputs.clear();
+            pendingHeapInserts.clear();
         }
-//        if (pendingDecreaseKeys.size() > 0) {
-//            for (int i : pendingDecreaseKeys) {
-//                heap.decreaseKey(i, 0);
-//            }
-//            pendingDecreaseKeys.clear();
-//        }
+    }
+
+    // Writes the string given to it as a parameter to the specified output text file.
+    // It uses the PrintWriter object initialized in the constructor.
+    private void printOutput(String output) {
+        writer.println(output);
     }
 
     // helper function to create an Scanner object for the input file
@@ -177,7 +169,7 @@ public class Main {
         try {
             sc = new Scanner(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("Error: Input file not found");
         }
         return sc;
     }

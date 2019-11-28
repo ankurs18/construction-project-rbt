@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cfacc8dc-571f-4aaf-a870-d2df986d10b9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Building.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Building.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Constants.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MinHeap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MinHeap.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/RedBlackTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RedBlackTree.java" afterDir="false" />
@@ -28,11 +28,15 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="TODO_SCOPE" value="All Places" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/out/production/ADSProject" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ankur\Documents\Code\ADSProject\src" />
       <recent name="C:\Users\ankur\Documents\Code\ADSProject\out\production\ADSProject" />
     </key>
   </component>
@@ -48,17 +52,49 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Main" />
+  <component name="RunManager" selected="Application.risingCity">
+    <configuration name="discountedPrice" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="test.discountedPrice" />
+      <module name="Leet2" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="risingCity" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="risingCity" />
       <module name="ADSProject" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="test.test" />
+      <module name="Leet2" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test2" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="test.test2" />
+      <module name="Leet2" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test3" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="test.test3" />
+      <module name="Leet2" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.risingCity" />
+        <item itemvalue="Application.test" />
+        <item itemvalue="Application.test3" />
+        <item itemvalue="Application.discountedPrice" />
+        <item itemvalue="Application.test2" />
       </list>
     </recent_temporary>
   </component>
@@ -91,7 +127,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574063690197</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Added relevant comments">
+      <created>1574448111960</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1574448111961</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -114,25 +157,21 @@
     <MESSAGE value="gitignore" />
     <MESSAGE value="Added implementation for min heap and file read" />
     <MESSAGE value="Added method for picking the next building for construction" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added method for picking the next building for construction" />
+    <MESSAGE value="Added relevant comments" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added relevant comments" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/src/RedBlackTree.java</url>
-          <line>211</line>
-          <option name="timeStamp" value="37" />
-        </line-breakpoint>
-        <line-breakpoint type="java-line">
-          <url>file://$PROJECT_DIR$/src/RedBlackTree.java</url>
-          <line>278</line>
-          <option name="timeStamp" value="41" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Main.java</url>
-          <line>50</line>
+          <line>49</line>
           <option name="timeStamp" value="89" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/../Leet2/src/test/test.java</url>
+          <line>12</line>
+          <option name="timeStamp" value="90" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
