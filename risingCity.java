@@ -16,7 +16,7 @@ public class risingCity {
         this.rbTree = new RedBlackTree();
         pendingHeapInserts = new ArrayList<>();
         try {
-            this.writer = new PrintWriter(new FileWriter("output.txt"));
+            this.writer = new PrintWriter(new FileWriter("output_file.txt"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -24,11 +24,11 @@ public class risingCity {
 
     public static void main(String[] args) {
         risingCity main = new risingCity();
-        Scanner sc = main.readFile("input3.txt");
+        Scanner sc = main.readFile(args[0]);
         System.out.println("Execution started..");
         main.process(sc);
         main.writer.close();
-        System.out.println("Execution completed. Output file: output.txt");
+        System.out.println("Execution completed. Output file: output_file.txt");
     }
 
     // the next command to process is read from the input file but not processed until its time matches the global timer
@@ -163,6 +163,10 @@ public class risingCity {
     // helper function to create an Scanner object for the input file
     private Scanner readFile(String fileName) {
         URL url = getClass().getResource(fileName);
+        if (url == null) {
+            System.out.println("Error: Input file not found");
+            System.exit(-1);
+        }
         File file =
                 new File(url.getPath());
         Scanner sc = null;
